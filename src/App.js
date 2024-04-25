@@ -1,9 +1,9 @@
-import StyledComponent from "./components/StyledComponent";
+import Axios from "./pages/Axios";
 
 function App() {
   return (
     <div>
-      <StyledComponent />
+      <Axios />
     </div>
   );
 }
