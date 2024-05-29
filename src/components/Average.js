@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 
 const getAverage = number => {
   console.log("평균값 계산 중...");
@@ -16,26 +16,26 @@ const Average = () => {
   const inputElement = useRef(null);
 
   // input 이벤트 핸들러
-  const onChange = e => {
+  const onChange = useCallback(e => {
     setNumber(e.target.value);
     console.log(e.target.value);
-  };
+  }, []);
 
   // button 이벤트 핸들러
-  const onClick = () => {
+  const onClick = useCallback(() => {
     const nextList = list.concat(parseInt(number));
     setList(nextList);
     setNumber("");
     // useRef
     inputElement.current.focus();
-  };
+  }, [number, list]);
 
   // useRef 로컬 변수 사용하기
   // 더블클릭 방지 기능
   const isClick = useRef(false);
   const preventDblClick = () => {
     if (isClick.current) {
-      console.log("이미 처리 중입니다.");
+      console.log("이미 처리중입니다...");
       inputElement.current.focus();
       return;
     }
@@ -44,14 +44,20 @@ const Average = () => {
     isClick.current = true;
     onClick();
 
-    // 처리에 2초가 소요된다고 가정
+    // 처리에 1초가 소요된다고 가정하자.
     setTimeout(() => {
       isClick.current = false;
-      console.log("처리 완료");
+      console.log("처리완료");
     }, 2000);
   };
 
-  const avg = getAverage(list);
+  // const avg = getAverage(list);
+  // useMemo를 사용할 때
+  // input 내용이 바뀔 때는 평균값을 계산할 필요 없음
+  // list가 바뀌었을 때만 평균값을 계산
+  const avg = useMemo(() => {
+    return getAverage(list);
+  }, [list]);
 
   return (
     <div>
